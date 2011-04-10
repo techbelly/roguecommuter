@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rogue Grouper</title>
+    <link type="text/css" href="css/codemirror.css" rel="stylesheet" />	
+    <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.11.custom.css" rel="stylesheet" />	
+    <link type="text/css" href="css/rogue.css" rel="stylesheet" />	
+    <link type="text/css" href="css/javascript.css" rel="stylesheet" />	
+    <script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.11.custom.min.js"></script>
+    <script type="text/javascript" src="js/codemirror.js"></script>
+    <script type="text/javascript" src="js/javascript.js"></script>
+    <script type="text/javascript">
+      $(function(){
+            $('#tabs').tabs();
+          });
+      $(document).ready(function(){ 
+          $('.code').each(function(i,t) {
+            CodeMirror.fromTextArea(t, {
+               mode:  "javascript",
+               lineNumbers: true
+            });
+            });
+          $('.memory').each(function(i,t) {
+            CodeMirror.fromTextArea(t, {
+               mode:  {name:"javascript",json:"true"},
+               lineNumbers: true
+            });
+          });
+        });      
+      $(document).ready(function() {
+          }
+      );
+    </script>
+  </head>
+  <body>
+    <h1><img src="/images/ROGUE.png"/>commuter</h1>
+    <div id="tabs">
+      <ul>
+      <% @personalities.each do |p| %>
+        <li><a href="#tabs-<%= p.id %>"><%= p.name %></a></li>
+      <% end %>
+        <li><a href="#tabs-n">+</a></li>
+      </ul>
+      <% @personalities.each do |p| %>
+      <div id="tabs-<%= p.id %>">
+
+        <form id="form-<%= p.id %>" method="post" action=""> 
+          <ul > 
+            <input type="hidden" name="personality_id" value="<%= p.id %>">
+            <li> 
+            <label class="description" for="current_status">Status</label> 
+            <div> 
+              <%= p.state %>  
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="code">Brain</label> 
+            <div> 
+              <textarea id="code-<%=p.id%>" name="code" class="code element textarea medium"><%= p.code %></textarea> 
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="env">Environment</label> 
+            <div> 
+              <textarea id="env-<%=p.id%>" name="env" class="memory element textarea medium"><%= p.environment %></textarea> 
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="bluetooth">Bluetooth ID</label> 
+            <div> 
+              <input name="bluetooth_id" class="element text medium" type="text" maxlength="255" value="<%= p.bluetooth_id %>"/> 
+            </div> 
+            </li> 
+
+            <li class="buttons"> 
+            <input class="button_text" type="submit" name="submit" value="Submit" /> 
+            </li> 
+          </ul> 
+        </form>
+
+      </div>
+    <% end %>
+     <div id="tabs-n">
+
+        <form id="form-n" method="post" action=""> 
+          <ul > 
+            <li> 
+            <label class="description" for="name">Name</label> 
+            <div> 
+              <input name="name" class="element text medium" type="text" maxlength="255" value=""/> 
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="code">Brain</label> 
+            <div> 
+              <textarea id="code-n" name="code" class="code element textarea medium"></textarea> 
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="env">Environment</label> 
+            <div> 
+              <textarea id="env-n" name="env" class="memory element textarea medium"></textarea> 
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="bluetooth">Bluetooth ID</label> 
+            <div> 
+              <input name="bluetooth_id" class="element text medium" type="text" maxlength="255" value=""/> 
+            </div> 
+            </li> 
+
+            <li class="buttons"> 
+            <input class="button_text" type="submit" name="submit" value="Create Bew" /> 
+            </li> 
+          </ul> 
+        </form>
+
+      </div>
+
+    </div>
+  </body>
+</html>
+
+
+

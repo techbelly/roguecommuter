@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rogue Grouper</title>
+    <link type="text/css" href="css/codemirror.css" rel="stylesheet" />	
+    <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.11.custom.css" rel="stylesheet" />	
+    <link type="text/css" href="css/rogue.css" rel="stylesheet" />	
+    <link type="text/css" href="css/javascript.css" rel="stylesheet" />	
+    <script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.8.11.custom.min.js"></script>
+    <script type="text/javascript" src="js/codemirror.js"></script>
+    <script type="text/javascript" src="js/javascript.js"></script>
+    <script type="text/javascript">
+      $(function(){
+            $('#tabs').tabs();
+          });
+      $(document).ready(function(){ 
+          var brain = CodeMirror.fromTextArea($('#code')[0],{
+                mode:  "javascript",
+                lineNumbers: true
+                });
+          var memory = CodeMirror.fromTextArea($('#memory')[0],{
+                mode: { name: "javascript", json: true },
+                lineNumbers: true
+                });
+        });      
+    </script>
+  </head>
+  <body>
+    <h1><img src="/images/ROGUE.png"/>commuter</h1>
+    <div id="tabs">
+      <ul>
+        <li><a href="#tabs-1">BAGMAN</a></li>
+        <li><a href="#tabs-2">UMBRELLAR</a></li>
+        <li><a href="#tabs-3">HELM</a></li>
+      </ul>
+      <div id="tabs-1">
+
+        <form id="form_142921" class="appnitro"  method="post" action=""> 
+          <ul > 
+
+            <li> 
+            <label class="description" for="current_status">Status</label> 
+            <div> 
+              Running on this server.
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="code">Brain</label> 
+            <div> 
+              <textarea id="code" style="ad" name="brain" class="element textarea medium"></textarea> 
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="env">Environment</label> 
+            <div> 
+              <textarea id="memory" name="env" class="element textarea medium"></textarea> 
+            </div> 
+            </li>		
+            <li> 
+            <label class="description" for="bluetooth">Bluetooth ID</label> 
+            <div> 
+              <input name="blootooth" class="element text medium" type="text" maxlength="255" value=""/> 
+            </div> 
+            </li> 
+
+            <li class="buttons"> 
+            <input id="save" class="button_text" type="submit" name="submit" value="Submit" /> 
+            </li> 
+          </ul> 
+        </form>
+
+      </div>
+      <div id="tabs-2">Phasellus mattis tincidunt nibh. Cras orci urna, blandit id, pretium vel, aliquet ornare, felis. Maecenas scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.</div>
+      <div id="tabs-3">Nam dui erat, auctor a, dignissim quis, sollicitudin eu, felis. Pellentesque nisi urna, interdum eget, sagittis et, consequat vestibulum, lacus. Mauris porttitor ullamcorper augue.</div>
+    </div>
+  </body>
+</html>
+
+

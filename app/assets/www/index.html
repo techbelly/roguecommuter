@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>PhoneGap</title>
+
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.css" />  
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.3.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/mobile/1.0a1/jquery.mobile-1.0a1.min.js"></script>
+<style>
+ .ui-page { background: #a52b41 url('BG.png') repeat-x; }
+</style>
+<script type="text/javascript" charset="utf-8" src="phonegap.0.9.4.js"></script>
+<script type="text/javascript">
+
+	
+
+	var metronome = {
+		timeout: function() {},
+		interval: 500,
+		
+		start: function(tempo){
+			if (metronome.ticking) metronome.stop();
+			metronome.interval= 1000 / (tempo || 2);
+			metronome.tick();
+			metronome.ticking= true;
+			return metronome;
+		},
+
+		stop: function(){
+			clearTimeout(metronome.timeout);
+			metronome.ticking= false;
+			return metronome;
+		},
+
+		tick: function(){
+			metronome.trigger();
+			metronome.timeout= setTimeout(metronome.tick, metronome.interval);
+			return metronome;
+		},
+
+		trigger: function(){
+			$(document).trigger("tick");
+			return metronome;
+		},
+
+		ticking: false
+
+	};
+		
+	var personalities = {};
+	var _log = function(m) {
+		$('#console').prepend("<p style=\"color: #fff; font-weight:bold; font-family: monospace\">"+m+"</p>");
+	};
+	
+	var runtime = {
+		log: function(m) { _log(m) },
+		where_am_i: function(success) {
+			navigator.geolocation.getCurrentPosition(success, function() {});
+		},
+		say: function(message,mymac,mac) {
+			var other = personalities[mac];
+			if (other != null) {
+				_log(mymac.name+ " SAID "+message);
+				other.event({"type":"heard","time":(new Date().getTime()),"args":{"message":message,"from":mymac}});
+			}
+		}
+	};
+	
+	var personality = function(data) {
+		var p = {
+			env: $.parseJSON(data.environment),
+			ego: {"name":data.name,"mac":data.bluetooth_id},
+			event: function(e) { 
+				var env = p.env;
+				var ego = p.ego;
+				var lib = runtime;
+				var event = e;
+				eval(data.code);
+			 }
+		};
+		return p;
+	};
+	
+	var dispatch_events = function(event) {
+		for (var p in personalities) {
+			personalities[p].event(event);
+		}
+	};
+	
+	var loader = function(bluetooth_id) {
+			var results = function() {
+				var register = function(data) {
+					var p = personality(data);
+					personalities[data.bluetooth_id] = p;
+					p.event({"type":"reborn","time":(new Date().getTime()),"args":{"location":"PHONE"}});
+					_log("Loaded "+data.name);
+				};
+		
+				var umbrellar = $.getJSON( "http://192.168.3.42:9292/bluetooth/"+bluetooth_id,{time:(new Date().getTime())},register);
+			};
+			return results;
+		};
+		
+		var saver = function(bluetooth_id) {
+			var results = function() {
+				var data = personalities[bluetooth_id];
+				$.post( "http://192.168.3.42:9292/bluetooth/"+bluetooth_id, {"env":data.env});
+				_log("Saved "+data.ego.name);
+				delete personalities[bluetooth_id];
+			}
+			return results;
+		};
+	
+	function foundDevice(name,mac) {
+ 	   if (name == "ARDUINOBT") {
+ 	   		_log("FOUND UMBRELLAR!!!");
+ 	   		if (! personalities["dddd"]) {
+ 	   			loader("dddd")();
+ 	   			dispatch_events({"type":"found","time":(new Date().getTime()),"args":{"name":"UMBRELLAR"}});
+ 	   			$("#save-umbrella").show();
+ 	   		}
+ 	   } else if (name == "BAGMAN") {
+ 	   		_log("FOUND BAGMAN!!!");
+ 	   		if (! personalities["eeee"]) {
+ 	   			loader("eeee")();
+ 	   			dispatch_events({"type":"found","time":(new Date().getTime()),"args":{"name":"BAGMAN"}});
+ 	   			$("#save-bagman").show();
+ 	   		}
+ 	   }
+	}
+	
+	var poll = function() {
+		getDevicesEvent();
+		window.setTimeout(poll,30000);
+		_log("Polling for bluetooth");
+	}
+	
+		
+	$(document).ready(function(){
+		metronome.start(0.2);
+		window.setTimeout(poll,2000);
+		
+		$(document).bind('tick', function(){
+			dispatch_events({"type":"tick","time":(new Date().getTime()),"args":{}});
+		});
+		
+				
+		$('#save-umbrella').bind("click", function() {
+			saver("dddd")();
+			$('#save-umbrella').hide();
+			});
+		$('#save-bagman').bind("click",function() {
+			saver("eeee")();
+			$('#save-bagman').hide();	
+			});
+	});
+</script>
+<script type="text/javascript" charset="utf-8" src="bluetooth_service.js"></script>
+</head>
+<body>
+<div data-role="page"> 
+	<div data-role="header">
+		<h1>ROGUE COMMUTER</h1>
+	</div>
+	<div data-role="content">	
+   		<a href="#" style="display:none" data-role="button" id="save-umbrella" value="SAVE UMBRELLAR">SAVE UMBRELLAR</a>
+   		<a href="#" style="display:none" data-role="button" id="save-bagman" value="SAVE BAGMAN">SAVE BAGMAN</a>
+   		<div id="console">
+ 		</div>
+	</div>
+</div>
+</body>
+</html>
