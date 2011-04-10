@@ -1,0 +1,5 @@
+This is the code that I and @jodrell wrote at the Pachube internet of things hackday.
+
+Somehow, it worked well enough for us to demo. It might not work well enough for you to use.
+
+There's an android PhoneGap app in app, and a sinatra ruby webapp in site. There's also some Arduino code that's yet to appear.
